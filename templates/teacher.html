@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师管理</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 60px 24px;
+            color: #006064;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            max-width: 880px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00838f 0%, #00acc1 50%, #26c6da 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        header p {
+            color: #718096;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            padding: 48px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00acc1, #26c6da, #4dd0e1);
+            border-radius: 24px 24px 0 0;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(180deg, #00acc1, #26c6da);
+            border-radius: 2px;
+        }
+        .form-group {
+            margin-bottom: 28px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f7fafc;
+            font-family: inherit;
+            position: relative;
+            z-index: 1;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #38b2ac;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(56, 178, 172, 0.1);
+            transform: translateY(-1px);
+        }
+        .form-group input[type="file"] {
+            cursor: pointer;
+        }
+        .form-group input[type="file"]:hover {
+            border-color: #48bb78;
+        }
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+        .btn {
+            padding: 16px 36px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00838f 0%, #00acc1 100%);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+        .btn-secondary {
+            background: #f7fafc;
+            color: #475569;
+            width: 100%;
+            justify-content: center;
+            border: 2px solid #e2e8f0;
+        }
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+        .btn-danger:active {
+            transform: translateY(0) scale(0.98);
+        }
+        .connection-status {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #744210;
+            padding: 28px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.3);
+        }
+        .connection-status h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+        .connection-status .name {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .key-display {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2d3748;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.3);
+        }
+        .key-display h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .key-value {
+            font-family: 'SF Mono', 'Courier New', monospace;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.6);
+            padding: 20px;
+            border-radius: 14px;
+            word-break: break-all;
+            margin-top: 16px;
+            letter-spacing: 2px;
+        }
+        .alert {
+            padding: 18px 24px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .alert-error {
+            background: #fff5f5;
+            color: #c53030;
+            border-left: 4px solid #fc8181;
+        }
+        .alert-success {
+            background: #f0fff4;
+            color: #276749;
+            border-left: 4px solid #68d391;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .preview-item {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .preview-item:hover {
+            border-color: #38b2ac;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(56, 178, 172, 0.2);
+        }
+        .file-preview-item {
+            padding: 12px 16px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 32px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .back-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .back-link:hover::before {
+            left: 100%;
+        }
+        .back-link:hover {
+            background: white;
+            color: #00acc1;
+            transform: translateX(-4px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 172, 193, 0.2);
+        }
+        .button-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .button-group .btn {
+            flex: 1;
+            min-width: 160px;
+        }
+        .image-editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .image-editor-container {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .image-editor-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .image-editor-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        .image-editor-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+        .cropper-wrapper {
+            max-height: 50vh;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #f0f0f0;
+        }
+        .cropper-wrapper img {
+            max-width: 100%;
+            display: block;
+        }
+        .image-editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-editor-toolbar .btn {
+            min-width: 80px;
+            padding: 10px 16px;
+        }
+        .angle-adjust {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 8px;
+        }
+        .angle-adjust label {
+            white-space: nowrap;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .angle-adjust input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            cursor: pointer;
+        }
+        .image-editor-nav {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .image-editor-nav .btn {
+            min-width: 120px;
+        }
+        .image-editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .image-editor-container {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 95vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .image-editor-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #00acc1 0%, #26c6da 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .image-editor-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .btn-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .image-editor-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .cropper-wrapper {
+            max-height: 50vh;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #f5f5f5;
+        }
+        .cropper-wrapper img {
+            max-width: 100%;
+            display: block;
+        }
+        .cropper-container {
+            max-height: 50vh;
+        }
+        .image-editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .toolbar-btn {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border: 2px solid #80deea;
+            color: #006064;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .angle-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            max-width: 280px;
+        }
+        .angle-control label {
+            white-space: nowrap;
+            font-size: 0.85rem;
+            color: #006064;
+        }
+        .angle-control input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #80deea;
+            outline: none;
+        }
+        .image-editor-nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .nav-btn {
+            background: #eceff1;
+            border: none;
+            color: #546e7a;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #00acc1 0%, #26c6da 100%);
+            color: white;
+            flex: 1;
+        }
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 32px 16px;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+            .card {
+                padding: 32px 24px;
+            }
+            .connection-status {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← 返回首页</a>
+        
+        <header>
+            <h1>教师管理</h1>
+            <p>创建和管理课堂连接，分享教学内容</p>
+        </header>
+
+        {% if error %}
+        <div class="alert alert-error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if key and connection_name %}
+        <div class="key-display">
+            <h3>✨ 连接创建成功！</h3>
+            <p><strong>连接名称：</strong>{{ connection_name }}</p>
+            <p><strong>连接密钥（20位）：</strong></p>
+            <div class="key-value">{{ key }}</div>
+            <p style="margin-top: 12px; opacity: 0.9;">请妥善保存此密钥！</p>
+        </div>
+        {% endif %}
+
+        <div class="card" id="key-form">
+            <div class="card-title">连接到现有课堂</div>
+            <form id="key-form-inner">
+                <div class="form-group">
+                    <label for="connection-key">输入连接密钥</label>
+                    <input type="text" id="connection-key" name="key" required placeholder="请输入20位连接密钥" maxlength="20">
+                </div>
+                <button type="submit" class="btn btn-primary">确认连接</button>
+            </form>
+        </div>
+
+        <div class="card" id="create-form">
+            <div class="card-title">创建新连接</div>
+            <form action="/api/create-connection" method="POST">
+                <div class="form-group">
+                    <label for="connection-name">连接名称</label>
+                    <input type="text" id="connection-name" name="name" required placeholder="例如：高一(1)班">
+                </div>
+                <button type="submit" class="btn btn-primary">创建连接</button>
+            </form>
+        </div>
+
+        <div class="connection-status hidden" id="connection-status">
+            <div>
+                <h3>当前连接</h3>
+                <div class="name" id="current-name"></div>
+            </div>
+            <button id="disconnect-btn" class="btn btn-danger">取消连接</button>
+        </div>
+
+        <div class="card hidden" id="share-form">
+            <div class="card-title">分享内容</div>
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="images">上传图片</label>
+                    <input type="file" id="images" name="images" accept="image/*" capture="environment" multiple>
+                    <div class="preview-container" id="preview-container"></div>
+                </div>
+                <div class="form-group">
+                    <label for="files">上传文件（可多选）</label>
+                    <input type="file" id="files" name="files" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar">
+                    <div class="preview-container" id="file-preview-container"></div>
+                </div>
+                <div class="form-group">
+                    <label for="text">文字</label>
+                    <textarea id="text" name="text" placeholder="请输入要分享的文字内容..."></textarea>
+                </div>
+                <input type="hidden" id="connection-key-hidden" name="key">
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">保存分享内容</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="alert alert-success hidden" id="success-message"></div>
+    </div>
+
+    <div class="image-editor-modal hidden" id="image-editor-modal">
+        <div class="image-editor-container">
+            <div class="image-editor-header">
+                <h3>编辑图片 <span id="edit-image-count"></span></h3>
+                <button type="button" id="close-editor-btn" class="btn-close">×</button>
+            </div>
+            <div class="image-editor-content">
+                <div class="cropper-wrapper">
+                    <img id="cropper-image" src="" alt="编辑图片">
+                </div>
+                <div class="image-editor-toolbar">
+                    <button type="button" class="toolbar-btn" id="rotate-left-btn">↺ 左转</button>
+                    <button type="button" class="toolbar-btn" id="rotate-right-btn">↻ 右转</button>
+                    <button type="button" class="toolbar-btn" id="flip-h-btn">↔ 翻转</button>
+                    <button type="button" class="toolbar-btn" id="flip-v-btn">↕ 翻转</button>
+                    <div class="angle-control">
+                        <label>角度: <span id="angle-value">0</span>°</label>
+                        <input type="range" id="angle-slider" min="-45" max="45" value="0">
+                    </div>
+
+                </div>
+                <div class="image-editor-nav">
+                    <button type="button" class="nav-btn" id="prev-image-btn">← 上一张</button>
+                    <button type="button" class="nav-btn primary" id="save-crop-btn">✓ 确认保存</button>
+                    <button type="button" class="nav-btn" id="next-image-btn">下一张 →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        let capturedImages = [];
+        let cropper = null;
+        let currentEditIndex = 0;
+
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + expires.toUTCString() + ';path=/;SameSite=Lax';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+            }
+            return null;
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showConnectedState(name, key) {
+            document.getElementById('current-name').textContent = escapeHtml(name);
+            document.getElementById('connection-key-hidden').value = key;
+            document.getElementById('connection-status').classList.remove('hidden');
+            document.getElementById('share-form').classList.remove('hidden');
+            document.getElementById('key-form').classList.add('hidden');
+            document.getElementById('create-form').classList.add('hidden');
+        }
+
+        function showDisconnectedState() {
+            document.getElementById('connection-status').classList.add('hidden');
+            document.getElementById('share-form').classList.add('hidden');
+            document.getElementById('key-form').classList.remove('hidden');
+            document.getElementById('create-form').classList.remove('hidden');
+            document.getElementById('connection-key').value = '';
+            document.getElementById('text').value = '';
+            document.getElementById('preview-container').innerHTML = '';
+            document.getElementById('file-preview-container').innerHTML = '';
+            capturedImages = [];
+        }
+
+        async function autoConnect() {
+            const savedKey = getCookie('teacher_connection_key');
+            if (savedKey && savedKey.length === 20) {
+                try {
+                    const response = await fetch('/api/get-connection-name?key=' + encodeURIComponent(savedKey));
+                    const data = await response.json();
+                    if (data.name) {
+                        showConnectedState(data.name, savedKey);
+                        const shareResponse = await fetch('/api/get-share?key=' + encodeURIComponent(savedKey));
+                        const shareData = await shareResponse.json();
+                        if (shareData.share) {
+                            const share = JSON.parse(shareData.share);
+                            document.getElementById('text').value = escapeHtml(share.text || '');
+                        }
+                    }
+                } catch (error) {
+                    console.log('自动连接失败:', error);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            autoConnect();
+            {% if key and connection_name %}
+            setCookie('teacher_connection_key', '{{ key }}', 30);
+            showConnectedState('{{ connection_name }}', '{{ key }}');
+            {% endif %}
+        });
+
+        document.getElementById('key-form-inner').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const key = document.getElementById('connection-key').value;
+            if (key.length !== 20) {
+                alert('请输入20位连接密钥');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/get-connection-name?key=' + encodeURIComponent(key));
+                const data = await response.json();
+                if (data.name) {
+                    setCookie('teacher_connection_key', key, 30);
+                    showConnectedState(data.name, key);
+                    const shareResponse = await fetch('/api/get-share?key=' + encodeURIComponent(key));
+                    const shareData = await shareResponse.json();
+                    if (shareData.share) {
+                        const share = JSON.parse(shareData.share);
+                        document.getElementById('text').value = escapeHtml(share.text || '');
+                    }
+                } else {
+                    alert('连接密钥不存在');
+                }
+            } catch (error) {
+                alert('验证失败：' + error.message);
+            }
+        });
+
+        document.getElementById('disconnect-btn').addEventListener('click', function() {
+            if (confirm('确定要取消连接吗？')) {
+                deleteCookie('teacher_connection_key');
+                showDisconnectedState();
+            }
+        });
+
+        document.getElementById('images').addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            capturedImages = [];
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    capturedImages.push({ original: event.target.result, edited: event.target.result });
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            setTimeout(() => {
+                if (capturedImages.length > 0) {
+                    openImageEditor();
+                }
+            }, 100);
+        });
+
+        function openImageEditor() {
+            if (capturedImages.length === 0) return;
+            
+            currentEditIndex = 0;
+            document.getElementById('image-editor-modal').classList.remove('hidden');
+            
+            if (cropper) {
+                cropper.destroy();
+            }
+            
+            const imageElement = document.getElementById('cropper-image');
+            imageElement.src = capturedImages[currentEditIndex].edited;
+            
+            cropper = new Cropper(imageElement, {
+                aspectRatio: NaN,
+                viewMode: 1,
+                autoCropArea: 0.95,
+                responsive: true,
+            });
+            
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            document.getElementById('prev-image-btn').disabled = currentEditIndex === 0;
+            document.getElementById('next-image-btn').disabled = currentEditIndex >= capturedImages.length - 1;
+            document.getElementById('edit-image-count').textContent = `(${currentEditIndex + 1}/${capturedImages.length})`;
+        }
+
+        function saveCurrentImage() {
+            if (!cropper) return;
+            const canvas = cropper.getCroppedCanvas({
+                maxWidth: 4096,
+                maxHeight: 4096,
+            });
+            capturedImages[currentEditIndex].edited = canvas.toDataURL('image/jpeg', 0.92);
+        }
+
+        document.getElementById('close-editor-btn').addEventListener('click', function() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('image-editor-modal').classList.add('hidden');
+            updatePreview();
+        });
+
+        document.getElementById('rotate-left-btn').addEventListener('click', function() {
+            if (cropper) cropper.rotate(-90);
+        });
+
+        document.getElementById('rotate-right-btn').addEventListener('click', function() {
+            if (cropper) cropper.rotate(90);
+        });
+
+        document.getElementById('flip-h-btn').addEventListener('click', function() {
+            if (cropper) {
+                const data = cropper.getData();
+                cropper.scaleX(data.scaleX === -1 ? 1 : -1);
+            }
+        });
+
+        document.getElementById('flip-v-btn').addEventListener('click', function() {
+            if (cropper) {
+                const data = cropper.getData();
+                cropper.scaleY(data.scaleY === -1 ? 1 : -1);
+            }
+        });
+
+        document.getElementById('angle-slider').addEventListener('input', function(e) {
+            document.getElementById('angle-value').textContent = e.target.value;
+            if (cropper) cropper.rotateTo(parseInt(e.target.value));
+        });
+
+        document.getElementById('angle-slider').addEventListener('change', function(e) {
+            document.getElementById('angle-value').textContent = '0';
+            e.target.value = 0;
+            if (cropper) cropper.rotateTo(0);
+        });
+
+        document.getElementById('prev-image-btn').addEventListener('click', function() {
+            if (currentEditIndex > 0) {
+                saveCurrentImage();
+                currentEditIndex--;
+                const imageElement = document.getElementById('cropper-image');
+                imageElement.src = capturedImages[currentEditIndex].edited;
+                cropper.destroy();
+                cropper = new Cropper(imageElement, {
+                    aspectRatio: NaN,
+                    viewMode: 1,
+                    autoCropArea: 0.95,
+                });
+                updateNavButtons();
+            }
+        });
+
+        document.getElementById('next-image-btn').addEventListener('click', function() {
+            if (currentEditIndex < capturedImages.length - 1) {
+                saveCurrentImage();
+                currentEditIndex++;
+                const imageElement = document.getElementById('cropper-image');
+                imageElement.src = capturedImages[currentEditIndex].edited;
+                cropper.destroy();
+                cropper = new Cropper(imageElement, {
+                    aspectRatio: NaN,
+                    viewMode: 1,
+                    autoCropArea: 0.95,
+                });
+                updateNavButtons();
+            }
+        });
+
+        document.getElementById('save-crop-btn').addEventListener('click', function() {
+            saveCurrentImage();
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('image-editor-modal').classList.add('hidden');
+            updatePreview();
+        });
+
+        const savedImages = sessionStorage.getItem('editedImages');
+        if (savedImages) {
+            try {
+                capturedImages = JSON.parse(savedImages);
+                sessionStorage.removeItem('editedImages');
+                setTimeout(updatePreview, 100);
+            } catch (e) {
+                console.error('解析图片数据失败:', e);
+            }
+        }
+
+        function updatePreview() {
+            const container = document.getElementById('preview-container');
+            container.innerHTML = '';
+            capturedImages.forEach((imgData, index) => {
+                const img = document.createElement('img');
+                img.src = imgData.edited;
+                img.className = 'preview-item';
+                img.onclick = function() {
+                    currentEditIndex = index;
+                    openImageEditor();
+                };
+                container.appendChild(img);
+            });
+        }
+
+        document.getElementById('files').addEventListener('change', function(e) {
+            const container = document.getElementById('file-preview-container');
+            container.innerHTML = '';
+            Array.from(e.target.files).forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'file-preview-item';
+                item.innerHTML = '📄 ' + escapeHtml(file.name);
+                container.appendChild(item);
+            });
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('key', document.getElementById('connection-key-hidden').value);
+            formData.append('text', document.getElementById('text').value);
+            
+            for (let i = 0; i < capturedImages.length; i++) {
+                const response = await fetch(capturedImages[i].edited);
+                const blob = await response.blob();
+                const file = new File([blob], `img_${Date.now()}_${i}.jpg`, { type: 'image/jpeg' });
+                formData.append('images', file);
+            }
+            
+            const filesInput = document.getElementById('files');
+            if (filesInput.files.length > 0) {
+                Array.from(filesInput.files).forEach(file => {
+                    formData.append('files', file);
+                });
+            }
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const successDiv = document.getElementById('success-message');
+                    successDiv.textContent = '保存成功！';
+                    successDiv.classList.remove('hidden');
+                    setTimeout(() => successDiv.classList.add('hidden'), 3000);
+                    capturedImages = [];
+                } else {
+                    alert('保存失败：' + data.error);
+                }
+            } catch (error) {
+                alert('保存失败：' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

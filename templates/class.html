@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级课堂</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 60px 24px;
+            color: #006064;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00838f 0%, #00acc1 50%, #26c6da 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header p {
+            color: #718096;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            padding: 48px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00acc1, #26c6da, #4dd0e1);
+            border-radius: 24px 24px 0 0;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+        }
+        #connection-section {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(180deg, #00acc1, #26c6da);
+            border-radius: 2px;
+        }
+        .form-group {
+            margin-bottom: 28px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f7fafc;
+            font-family: inherit;
+            position: relative;
+            z-index: 1;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #38b2ac;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(56, 178, 172, 0.1);
+            transform: translateY(-1px);
+        }
+        .form-group input:hover {
+            border-color: #48bb78;
+        }
+        .btn {
+            padding: 16px 36px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00838f 0%, #00acc1 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+        .btn-primary:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            width: auto;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-download:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        #connection-info {
+            margin-top: 18px;
+            padding: 18px 24px;
+            border-radius: 14px;
+            display: none;
+            font-weight: 500;
+        }
+        #connection-info.success {
+            background: #f0fff4;
+            color: #276749;
+            border-left: 4px solid #68d391;
+            display: block;
+        }
+        #connection-info.error {
+            background: #fff5f5;
+            color: #c53030;
+            border-left: 4px solid #fc8181;
+            display: block;
+        }
+        #content-section {
+            display: none;
+        }
+        #content-section.active {
+            display: block;
+        }
+        .content-display {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        .content-header {
+            background: linear-gradient(135deg, #00acc1 0%, #26c6da 50%, #4dd0e1 100%);
+            padding: 24px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .connection-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.3px;
+        }
+        .refresh-indicator {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .refresh-indicator .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #90fdfd;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(144, 253, 253, 0.6);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+        .content-body-wrapper {
+            position: relative;
+            display: flex;
+            min-height: 520px;
+            flex-direction: column;
+        }
+        .files-section {
+            padding: 24px 36px;
+            background: #f7fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .files-section h3 {
+            color: #2d3748;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .file-item:hover {
+            border-color: #38b2ac;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .file-item a {
+            text-decoration: none;
+            color: #00acc1;
+            font-weight: 500;
+        }
+        .main-content-wrapper {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+        .image-section {
+            flex: 0 0 50%;
+            min-width: 0;
+            padding: 36px;
+            overflow-y: auto;
+            background: #f7fafc;
+        }
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 18px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .image-section img:hover {
+            transform: scale(1.02);
+        }
+        .image-section img:last-child {
+            margin-bottom: 0;
+        }
+        .resizer {
+            width: 8px;
+            background: linear-gradient(90deg, #e2e8f0, #38b2ac, #e2e8f0);
+            cursor: col-resize;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .resizer:hover,
+        .resizer.active {
+            background: linear-gradient(90deg, #00acc1, #26c6da, #00acc1);
+            width: 10px;
+        }
+        .resizer::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 44px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .text-section {
+            flex: 1;
+            min-width: 0;
+            padding: 36px;
+            overflow-y: auto;
+        }
+        .text-section h3 {
+            margin-bottom: 24px;
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .text-section .content-text {
+            color: #4a5568;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #a0aec0;
+        }
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+            fill: #cbd5e0;
+        }
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 32px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .back-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .back-link:hover::before {
+            left: 100%;
+        }
+        .back-link:hover {
+            background: white;
+            color: #00acc1;
+            transform: translateX(-4px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 172, 193, 0.2);
+        }
+        .size-indicator {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            background: rgba(45, 55, 72, 0.85);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+        .size-indicator.show {
+            opacity: 1;
+        }
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            cursor: pointer;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .lightbox .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none !important;
+        }
+        @media (max-width: 900px) {
+            .main-content-wrapper {
+                flex-direction: column;
+            }
+            .image-section,
+            .text-section {
+                flex: none;
+                width: 100%;
+            }
+            .resizer {
+                display: none;
+            }
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 32px 16px;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+            .card {
+                padding: 32px 24px;
+            }
+            .content-header {
+                padding: 20px 24px;
+            }
+            .image-section,
+            .text-section {
+                padding: 24px;
+            }
+            .files-section {
+                padding: 20px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← 返回首页</a>
+        
+        <header>
+            <h1>班级课堂</h1>
+            <p>查看教师分享的教学内容</p>
+        </header>
+
+        <div class="card" id="connection-section">
+            <div class="card-title">连接课堂</div>
+            <div class="form-group">
+                <label for="connection-key">输入连接密钥</label>
+                <input type="text" id="connection-key" placeholder="请输入20位连接密钥" maxlength="20">
+            </div>
+            <button id="connect-btn" class="btn btn-primary">连接课堂</button>
+            <div id="connection-info"></div>
+        </div>
+
+        <div id="content-section">
+            <div class="content-display">
+                <div class="content-header">
+                    <div class="connection-name" id="display-name"></div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <button type="button" id="fullscreen-btn" class="btn" style="width: auto; padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3);" title="全屏显示">⛶ 全屏</button>
+                        <div class="refresh-indicator">
+                            <span class="dot"></span> 自动刷新中
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body-wrapper" id="content-body-wrapper">
+                    <div class="files-section hidden" id="files-section">
+                        <h3>📁 文件下载</h3>
+                        <div class="file-list" id="file-list"></div>
+                    </div>
+                    <div class="main-content-wrapper">
+                        <div class="image-section" id="image-section"></div>
+                        <div class="resizer" id="resizer"></div>
+                        <div class="text-section" id="text-section"></div>
+                        <div class="size-indicator" id="size-indicator"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lightbox hidden" id="lightbox">
+        <span class="close-btn">&times;</span>
+        <img id="lightbox-img" src="" alt="放大图片">
+    </div>
+
+    <script>
+        let connectionKey = null;
+        let refreshInterval = null;
+        let isResizing = false;
+
+        const connectBtn = document.getElementById('connect-btn');
+        const connectionKeyInput = document.getElementById('connection-key');
+        const connectionInfo = document.getElementById('connection-info');
+        const connectionSection = document.getElementById('connection-section');
+        const contentSection = document.getElementById('content-section');
+        const displayName = document.getElementById('display-name');
+        const contentBodyWrapper = document.getElementById('content-body-wrapper');
+        const imageSection = document.getElementById('image-section');
+        const textSection = document.getElementById('text-section');
+        const resizer = document.getElementById('resizer');
+        const sizeIndicator = document.getElementById('size-indicator');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + expires.toUTCString() + ';path=/;SameSite=Lax';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+            }
+            return null;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function autoConnect() {
+            const savedKey = getCookie('class_connection_key');
+            if (savedKey && savedKey.length === 20) {
+                try {
+                    const response = await fetch('/api/get-connection-name?key=' + encodeURIComponent(savedKey));
+                    const data = await response.json();
+
+                    if (data.name) {
+                        connectionKey = savedKey;
+                        displayName.textContent = escapeHtml(data.name);
+                        connectionSection.style.display = 'none';
+                        contentSection.classList.add('active');
+                        startAutoRefresh();
+                    }
+                } catch (error) {
+                    console.log('自动连接失败:', error);
+                }
+            }
+        }
+
+        async function connect() {
+            const key = connectionKeyInput.value.trim();
+            if (!key) {
+                showMessage('请输入连接密钥', 'error');
+                return;
+            }
+            if (key.length !== 20) {
+                showMessage('连接密钥必须为20位', 'error');
+                return;
+            }
+
+            connectBtn.disabled = true;
+            connectBtn.textContent = '连接中...';
+
+            try {
+                const response = await fetch('/api/get-connection-name?key=' + encodeURIComponent(key));
+                const data = await response.json();
+
+                if (data.name) {
+                    setCookie('class_connection_key', key, 30);
+                    connectionKey = key;
+                    displayName.textContent = escapeHtml(data.name);
+                    connectionSection.style.display = 'none';
+                    contentSection.classList.add('active');
+                    startAutoRefresh();
+                } else {
+                    showMessage('无效的连接密钥', 'error');
+                }
+            } catch (error) {
+                showMessage('连接失败，请重试', 'error');
+            } finally {
+                connectBtn.disabled = false;
+                connectBtn.textContent = '连接课堂';
+            }
+        }
+
+        function showMessage(message, type) {
+            connectionInfo.textContent = message;
+            connectionInfo.className = type;
+        }
+
+        function startAutoRefresh() {
+            refreshContent();
+            refreshInterval = setInterval(refreshContent, 5000);
+        }
+
+        async function refreshContent() {
+            if (!connectionKey) return;
+
+            try {
+                const response = await fetch('/api/get-share?key=' + encodeURIComponent(connectionKey));
+                const data = await response.json();
+
+                if (data.share) {
+                    let shareData;
+                    try {
+                        shareData = JSON.parse(data.share);
+                    } catch (e) {
+                        shareData = { img: '', text: data.share };
+                    }
+                    renderContent(shareData);
+                } else {
+                    renderEmptyState();
+                }
+            } catch (error) {
+                console.error('刷新失败:', error);
+            }
+        }
+
+        function renderContent(shareData) {
+            const images = shareData.img ? shareData.img.split(',').filter(img => img) : [];
+            const text = shareData.text || '';
+            const files = shareData.files || [];
+
+            let imageHtml = '';
+            if (images.length > 0) {
+                images.forEach(img => {
+                    const safeImg = escapeHtml(img);
+                    imageHtml += '<img src="/static/cimg/' + safeImg + '" alt="图片" onclick="openLightbox(\'/static/cimg/' + safeImg + '\')">';
+                });
+            } else {
+                imageHtml = '<div class="empty-state"><p>暂无图片</p></div>';
+            }
+            imageSection.innerHTML = imageHtml;
+
+            const filesSection = document.getElementById('files-section');
+            const fileList = document.getElementById('file-list');
+            if (files.length > 0) {
+                filesSection.classList.remove('hidden');
+                let fileHtml = '';
+                files.forEach(file => {
+                    const safeFilename = escapeHtml(file.filename);
+                    const safeOriginalName = escapeHtml(file.original_name);
+                    fileHtml += '<div class="file-item"><span>📄</span><a href="/api/download/' + safeFilename + '" download="' + safeOriginalName + '">' + safeOriginalName + '</a></div>';
+                });
+                fileList.innerHTML = fileHtml;
+            } else {
+                filesSection.classList.add('hidden');
+            }
+
+            let textHtml = '';
+            if (text) {
+                textHtml = '<h3>文字</h3><div class="content-text">' + escapeHtml(text) + '</div>';
+            } else {
+                textHtml = '<h3>文字</h3><div class="content-text">暂无文字内容</div>';
+            }
+            textSection.innerHTML = textHtml;
+        }
+
+        function renderEmptyState() {
+            const emptyHtml = '<div class="empty-state" style="width: 100%; padding: 80px 20px;"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><p>暂无内容</p></div>';
+            imageSection.innerHTML = '';
+            textSection.innerHTML = emptyHtml;
+            document.getElementById('files-section').classList.add('hidden');
+        }
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('hidden');
+        }
+
+        function initResizer() {
+            const minWidth = 200;
+            
+            resizer.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                resizer.classList.add('active');
+                sizeIndicator.classList.add('show');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+                
+                const wrapperRect = contentBodyWrapper.querySelector('.main-content-wrapper').getBoundingClientRect();
+                let newWidth = e.clientX - wrapperRect.left;
+                
+                const maxWidth = wrapperRect.width - minWidth - 10;
+                newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+                
+                const percentage = (newWidth / wrapperRect.width) * 100;
+                imageSection.style.flex = '0 0 ' + percentage + '%';
+                
+                const textPercentage = 100 - percentage - (10 / wrapperRect.width * 100);
+                sizeIndicator.textContent = '图片: ' + Math.round(percentage) + '% | 文字: ' + Math.round(textPercentage) + '%';
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    resizer.classList.remove('active');
+                    sizeIndicator.classList.add('show');
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            autoConnect();
+            initResizer();
+            
+            document.getElementById('fullscreen-btn').addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log('全屏失败:', err);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+            
+            document.addEventListener('fullscreenchange', function() {
+                const btn = document.getElementById('fullscreen-btn');
+                if (document.fullscreenElement) {
+                    btn.textContent = '⛶ 退出全屏';
+                } else {
+                    btn.textContent = '⛶ 全屏';
+                }
+            });
+        });
+
+        connectBtn.addEventListener('click', connect);
+        connectionKeyInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') connect();
+        });
+
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox || e.target.className === 'close-btn') {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>

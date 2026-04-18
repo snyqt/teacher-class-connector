@@ -8,6 +8,7 @@ services:
     volumes:
       - ./app.db:/app/app.db
       - ./static/cimg:/app/static/cimg
+      - ./static/files:/app/static/files
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=production
